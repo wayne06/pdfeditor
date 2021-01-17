@@ -14,6 +14,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Random;
 
+/**
+ * @author wayne
+ */
 @SpringBootApplication
 @RestController
 public class PdfeditorApplication {
@@ -90,13 +93,14 @@ public class PdfeditorApplication {
 
     @PostMapping("/api/merge")
     @CrossOrigin
-    public void merge(@RequestBody MergeBody body) throws IOException, DocumentException {
+    public String merge(@RequestBody MergeBody body) throws IOException, DocumentException {
         String path1 = body.getPath1().replaceAll("\\\\", "\\\\\\\\");;
         String path2 = body.getPath2().replaceAll("\\\\", "\\\\\\\\");;
 
+        String savePath = path1.split("//.")[0] + "_merge.pdf";
 
         Document document = new Document(new PdfReader(path1).getPageSize(1));
-        PdfCopy copy = new PdfCopy(document, new FileOutputStream(path1.split("//.")[0] + "_merge.pdf"));
+        PdfCopy copy = new PdfCopy(document, new FileOutputStream(savePath));
         document.open();
 
         PdfReader reader1 = new PdfReader(path1);
@@ -114,7 +118,11 @@ public class PdfeditorApplication {
             PdfImportedPage page = copy.getImportedPage(reader2, j);
             copy.addPage(page);
         }
+
         document.close();
+
+        String[] strings = savePath.split("\\\\");
+        return "http://localhost:8443/api/file/" + strings[strings.length-1];
     }
 
 }
