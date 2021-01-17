@@ -45,8 +45,6 @@
         },
         methods: {
             onSubmit() {
-                console.log(this.form.from);
-                console.log(this.form.to);
                 this.$axios.post('/extract', {
                     path: this.path,
                     from: this.form.from,
