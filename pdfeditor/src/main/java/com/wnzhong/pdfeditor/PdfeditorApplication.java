@@ -28,7 +28,8 @@ public class PdfeditorApplication {
     @PostMapping("/api/upload")
     @CrossOrigin
     public String coverUpload(MultipartFile file) {
-        File imgFolder = new File("F:\\pdf");
+        //File imgFolder = new File("F:\\pdf");
+        File imgFolder = new File("/usr/pdf");
         File f = new File(imgFolder, getRandomString(6) + file.getOriginalFilename().substring(file.getOriginalFilename().length() - 4));
         if (!f.getParentFile().exists()) {
             f.getParentFile().mkdirs();
@@ -57,7 +58,9 @@ public class PdfeditorApplication {
     @PostMapping("/api/extract")
     @CrossOrigin
     public String extract(@RequestBody ExtractBody body) {
-        String path = body.getPath().replaceAll("\\\\", "\\\\\\\\");
+        // windows server
+        //String path = body.getPath().replaceAll("\\\\", "\\\\\\\\");
+        String path = body.getPath();
         int from = body.getFrom();
         int to = body.getTo();
         Document document = null;
@@ -69,6 +72,8 @@ public class PdfeditorApplication {
                 to = n;
             }
             ArrayList<String> savepaths = new ArrayList<>();
+            // windows server
+            //String savepath = path.split("\\.")[0] + "_extract.pdf";
             String savepath = path.split("\\.")[0] + "_extract.pdf";
             System.out.println(savepath);
             savepaths.add(savepath);
@@ -81,8 +86,12 @@ public class PdfeditorApplication {
                 copy.addPage(page);
             }
             document.close();
-            String[] strings = savepath.split("\\\\");
-            return "http://localhost:8443/api/file/" + strings[strings.length-1];
+            // windows server
+            //String[] strings = savepath.split("\\\\");
+            //return "http://localhost:8443/api/file/" + strings[strings.length-1];
+
+            String[] strings = savepath.split("/");
+            return "http://139.159.183.141:8090/api/file/" + strings[strings.length-1];
         } catch (IOException e) {
             e.printStackTrace();
         } catch(DocumentException e) {
@@ -94,9 +103,13 @@ public class PdfeditorApplication {
     @PostMapping("/api/merge")
     @CrossOrigin
     public String merge(@RequestBody MergeBody body) throws IOException, DocumentException {
-        String path1 = body.getPath1().replaceAll("\\\\", "\\\\\\\\");;
-        String path2 = body.getPath2().replaceAll("\\\\", "\\\\\\\\");;
+        //String path1 = body.getPath1().replaceAll("\\\\", "\\\\\\\\");;
+        //String path2 = body.getPath2().replaceAll("\\\\", "\\\\\\\\");;
 
+        String path1 = body.getPath1();
+        String path2 = body.getPath2();
+
+        //String savePath = path1.split("//.")[0] + "_merge.pdf";
         String savePath = path1.split("//.")[0] + "_merge.pdf";
 
         Document document = new Document(new PdfReader(path1).getPageSize(1));
@@ -121,8 +134,11 @@ public class PdfeditorApplication {
 
         document.close();
 
-        String[] strings = savePath.split("\\\\");
-        return "http://localhost:8443/api/file/" + strings[strings.length-1];
+        //String[] strings = savePath.split("\\\\");
+        //return "http://localhost:8443/api/file/" + strings[strings.length-1];
+
+        String[] strings = savePath.split("/");
+        return "http://139.159.183.141:8090/api/file/" + strings[strings.length-1];
     }
 
 }
