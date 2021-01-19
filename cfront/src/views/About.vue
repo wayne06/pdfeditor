@@ -8,7 +8,7 @@
                         accept=".pdf"
                         :limit="1"
                         drag
-                        action="http://localhost:8443/api/upload"
+                        action="http://139.159.183.141:8090/api/upload"
                         :on-success="handleSuccess1"
                         :on-exceed="handleExceed">
                     <i class="el-icon-upload"></i>
@@ -20,12 +20,12 @@
                 <el-upload
                         class="upload-demo"
                         drag
-                        action="http://localhost:8443/api/upload"
+                        action="http://139.159.183.141:8090/api/upload"
                         :on-success="handleSuccess2"
                         :on-exceed="handleExceed"
                         multiple>
                     <i class="el-icon-upload"></i>
-                    <div class="el-upload__text">Drag PDF here, or click <em>upload</em></div>
+                    <div class="el-upload__text">Drag PDF here, or click to upload</div>
                 </el-upload>
             </el-form-item>
             <el-form-item>

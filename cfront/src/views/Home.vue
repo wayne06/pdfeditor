@@ -8,7 +8,7 @@
                         accept=".pdf"
                         class="upload-demo"
                         drag
-                        action="http://localhost:8443/api/upload"
+                        action="http://139.159.183.141:8090/api/upload"
                         :on-success="handleSuccess"
                         :on-exceed="handleExceed"
                 >

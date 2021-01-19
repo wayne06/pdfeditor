@@ -7,7 +7,8 @@ import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 
 var axios = require('axios')
-axios.defaults.baseURL = 'http://localhost:8443/api'
+// axios.defaults.baseURL = 'http://localhost:8443/api'
+axios.defaults.baseURL = 'http://139.159.183.141:8090/api'
 axios.defaults.withCredentials = true
 Vue.prototype.$axios = axios
 
