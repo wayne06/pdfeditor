@@ -8,7 +8,7 @@
                         accept=".pdf"
                         class="upload-demo"
                         drag
-                        action="http://139.159.183.141:8090/api/upload"
+                        :action="actionUrl"
                         :on-success="handleSuccess"
                         :on-exceed="handleExceed"
                 >
@@ -32,6 +32,7 @@
 </template>
 
 <script>
+    import vueConfig from '../../vue.config.js'
     export default {
         data() {
             return {
@@ -41,6 +42,7 @@
                     to: ''
                 },
                 disabled: true,
+                actionUrl: vueConfig.devServer.proxy["/api"].target + '/api/upload'
             }
         },
         methods: {
