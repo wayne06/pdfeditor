@@ -3,6 +3,7 @@ package com.wnzhong.pdfeditor;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.pdf.*;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.web.bind.annotation.*;
@@ -21,15 +22,23 @@ import java.util.Random;
 @RestController
 public class PdfeditorApplication {
 
+    @Value("${pdfAddr.prefix}")
+    private String pdfAddrPrefix;
+
     public static void main(String[] args) {
         SpringApplication.run(PdfeditorApplication.class, args);
     }
 
+
     @PostMapping("/api/upload")
     @CrossOrigin
     public String coverUpload(MultipartFile file) {
-        //File imgFolder = new File("F:\\pdf");
-        File imgFolder = new File("/usr/pdf");
+        File imgFolder = null;
+        if (System.getProperty("os.name").equals("Linux")) {
+            imgFolder = new File("/usr/pdf");
+        } else  {
+            imgFolder = new File("C:\\pdf");
+        }
         File f = new File(imgFolder, getRandomString(6) + file.getOriginalFilename().substring(file.getOriginalFilename().length() - 4));
         if (!f.getParentFile().exists()) {
             f.getParentFile().mkdirs();
@@ -60,7 +69,15 @@ public class PdfeditorApplication {
     public String extract(@RequestBody ExtractBody body) {
         // windows server
         //String path = body.getPath().replaceAll("\\\\", "\\\\\\\\");
-        String path = body.getPath();
+        //String path = body.getPath();
+
+        String path = null;
+        if (System.getProperty("os.name").equals("Linux")) {
+            path = body.getPath();
+        } else  {
+            path = body.getPath().replaceAll("\\\\", "\\\\\\\\");
+        }
+
         int from = body.getFrom();
         int to = body.getTo();
         Document document = null;
@@ -72,10 +89,7 @@ public class PdfeditorApplication {
                 to = n;
             }
             ArrayList<String> savepaths = new ArrayList<>();
-            // windows server
-            //String savepath = path.split("\\.")[0] + "_extract.pdf";
             String savepath = path.split("\\.")[0] + "_extract.pdf";
-            System.out.println(savepath);
             savepaths.add(savepath);
             document = new Document(reader.getPageSize(1));
             copy = new PdfCopy(document, new FileOutputStream(savepaths.get(0)));
@@ -90,8 +104,16 @@ public class PdfeditorApplication {
             //String[] strings = savepath.split("\\\\");
             //return "http://localhost:8443/api/file/" + strings[strings.length-1];
 
-            String[] strings = savepath.split("/");
-            return "http://139.159.183.141:8090/api/file/" + strings[strings.length-1];
+            //String[] strings = savepath.split("/");
+
+            String[] strings = null;
+            if (System.getProperty("os.name").equals("Linux")) {
+                strings = savepath.split("/");
+            } else  {
+                strings = savepath.split("\\\\");
+            }
+
+            return pdfAddrPrefix + strings[strings.length-1];
         } catch (IOException e) {
             e.printStackTrace();
         } catch(DocumentException e) {
@@ -134,11 +156,13 @@ public class PdfeditorApplication {
 
         document.close();
 
-        //String[] strings = savePath.split("\\\\");
-        //return "http://localhost:8443/api/file/" + strings[strings.length-1];
-
-        String[] strings = savePath.split("/");
-        return "http://139.159.183.141:8090/api/file/" + strings[strings.length-1];
+        String[] strings = null;
+        if (System.getProperty("os.name").equals("Linux")) {
+            strings = savePath.split("/");
+        } else  {
+            strings = savePath.split("\\\\");
+        }
+        return pdfAddrPrefix + strings[strings.length-1];
     }
 
 }
