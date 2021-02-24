@@ -8,7 +8,7 @@
                         accept=".pdf"
                         :limit="1"
                         drag
-                        action="http://139.159.183.141:8090/api/upload"
+                        :action="actionUrl"
                         :on-success="handleSuccess1"
                         :on-exceed="handleExceed">
                     <i class="el-icon-upload"></i>
@@ -20,7 +20,7 @@
                 <el-upload
                         class="upload-demo"
                         drag
-                        action="http://139.159.183.141:8090/api/upload"
+                        :action="actionUrl"
                         :on-success="handleSuccess2"
                         :on-exceed="handleExceed"
                         multiple>
@@ -37,11 +37,14 @@
 </template>
 
 <script>
+    import vueConfig from "../../vue.config";
+
     export default {
         data() {
             return {
                 path1: '',
-                path2: ''
+                path2: '',
+                actionUrl: vueConfig.devServer.proxy["/api"].target + '/api/upload'
             }
         },
         methods: {
